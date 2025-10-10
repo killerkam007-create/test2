@@ -1,4 +1,4 @@
-from pyspark.sql.functions import count
+from pyspark.sql.functions import count,sum
 from pyspark.sql import SparkSession
 from dict_cal_value import dict_cal
 
@@ -17,10 +17,27 @@ if __name__=="__main__":
     # df.show()
     df.printSchema()
     df.columns
-    assam_df = df.filter(df["State"] == "Assam").groupBy(df["District"]).agg(count(df["Pincode"]).alias("count"),sum(df["Pincode"]).alias("pin_sum"))
-    assam_df.wrrite.csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam.csv",header=True)
-    df.write.partitionBy(df["State"]).csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\State_partitioned",header=True)
-    spark.stop()
+    assam_df = (
+    df.filter(df["State"] == "Assam")
+      .groupBy("District")
+      .agg(
+          count("Pincode").alias("count"),
+          sum("Pincode").alias("pin_sum")
+      )).orderBy("District")
+    assam_df.show()
 
+    assam_df.write \
+    .format("csv") \
+    .mode("overwrite") \
+    .option("header", "true") \
+    .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam.csv")
+    # Partitioning data based on State column
+    assam_df.write \
+    .format("csv") \
+    .mode("overwrite") \
+    .option("header", "true") \
+    .partitionBy("State") \
+    .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam_partitioned")
+    spark.stop()
 
 
