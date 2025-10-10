@@ -25,19 +25,20 @@ if __name__=="__main__":
           sum("Pincode").alias("pin_sum")
       )).orderBy("District")
     assam_df.show()
+    assam_df.write.csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam.csv",header=True)
 
-    assam_df.write \
-    .format("csv") \
-    .mode("overwrite") \
-    .option("header", "true") \
-    .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam.csv")
+    # assam_df.write \
+    # .format("csv") \
+    # .mode("overwrite") \
+    # .option("header", "true") \
+    # .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam")
     # Partitioning data based on State column
-    assam_df.write \
-    .format("csv") \
-    .mode("overwrite") \
-    .option("header", "true") \
-    .partitionBy("State") \
-    .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam_partitioned")
+    # df.write \
+    # .format("csv") \
+    # .mode("overwrite") \
+    # .option("header", "true") \
+    # .partitionBy("State") \
+    # .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam_partitioned")
     spark.stop()
 
 
