@@ -16,7 +16,7 @@ if __name__=="__main__":
     # df.show()
     df.printSchema()
     df.columns
-    df.df["City"].show()
+    df.select(df["city"],df["country"]).show()
 
     spark.stop()
 
