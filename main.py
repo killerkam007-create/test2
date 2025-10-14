@@ -2,6 +2,7 @@ from pyspark.sql.functions import count,sum,lower,upper,avg,udf
 from pyspark.sql import SparkSession
 from dict_cal_value import dict_cal
 from test2 import test,test_init_upper
+from read_data import read_data1
 
 
 if __name__=="__main__":
@@ -9,11 +10,7 @@ if __name__=="__main__":
     calValue=dict_cal(sales_data)
     print(calValue)
     spark=SparkSession.builder.appName("TestApp").getOrCreate()
-    df = spark.read.csv(
-        "C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\cities.csv",
-        header=True,
-        inferSchema=True
-    )
+    df=read_data1(spark)
     udf_funct=udf()
     # df.show()
     df.printSchema()
@@ -30,7 +27,9 @@ if __name__=="__main__":
     assam_df.show()
     assam_df=assam_df.withColumn("Result",udf(test)("count"))
     assam_df.show()
-    # assam_df.write.csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam.csv",header=True)
+    # assam_df.write.csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam",header=True)
+    assam_df.coalesce(1).write.option("header", True).mode("overwrite").csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam",header=True)
+
 
     # assam_df.write \
     # .format("csv") \
