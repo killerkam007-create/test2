@@ -1,7 +1,7 @@
-from pyspark.sql.functions import count,sum
+from pyspark.sql.functions import count,sum,lower,upper,avg,udf
 from pyspark.sql import SparkSession
 from dict_cal_value import dict_cal
-
+from test2 import test,test_init_upper
 
 
 if __name__=="__main__":
@@ -14,9 +14,12 @@ if __name__=="__main__":
         header=True,
         inferSchema=True
     )
+    udf_funct=udf()
     # df.show()
     df.printSchema()
     df.columns
+    # df=df.withColumn("State",upper(df["State"]))
+    # df=df.withColumn("City",lower(df["City"]))
     assam_df = (
     df.filter(df["State"] == "Assam")
       .groupBy("District")
@@ -25,7 +28,9 @@ if __name__=="__main__":
           sum("Pincode").alias("pin_sum")
       )).orderBy("District")
     assam_df.show()
-    assam_df.write.csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam.csv",header=True)
+    assam_df=assam_df.withColumn("Result",udf(test)("count"))
+    assam_df.show()
+    # assam_df.write.csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\Assam.csv",header=True)
 
     # assam_df.write \
     # .format("csv") \
