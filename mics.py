@@ -55,3 +55,18 @@ def nth_largest_number(a,n):
         print(f'{n} largest element in a list {a} is {b[n-1]}')
     else:
         print(f'{n} is out of index')
+def count_frequency(list1,value):
+    count=0
+    for item in list1:
+        if item==value:
+            count+=1
+    return count
+
+def reverse_mics(l1):
+    l2=[]
+    for item in range(len(l1)-1,-1,-1):
+        l2.append(l1[item])
+    return l2
+
+
+    
