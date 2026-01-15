@@ -3,9 +3,19 @@ from pyspark.sql import SparkSession
 from dict_cal_value import dict_cal
 from test2 import test,test_init_upper
 from read_data import read_data1
+from mics import reverse_string,duplicateValue,preservingOrderList
+from mics import factorial_test,nth_largest_number,flatten_lsit
 
 
 if __name__=="__main__":
+    a='comprehensive list of 50 interview questions tailored for a Data Engineer with 5+ years of experience, covering SQL, data modeling, ETL, big data, cloud platforms, and system design.'
+    reverse_string(a)
+    sample_list=[1,2,3,4,5,1,2,3,6,7,8,9,4,5]
+    nth_largest_number(sample_list,4)
+    flatten_lsit([1,2,[3,4],5,[6,7,8],9])
+    preservingOrderList(sample_list)
+    duplicateValue(sample_list)
+    print(factorial_test(5))
     sales_data = [ {"product": "Laptop", "category": "Electronics", "price": 1000, "quantity": 2}, {"product": "Mouse", "category": "Electronics", "price": 25, "quantity": 5}, {"product": "Desk", "category": "Furniture", "price": 300, "quantity": 1}, {"product": "Chair", "category": "Furniture", "price": 150, "quantity": 4} ]
     calValue=dict_cal(sales_data)
     print(calValue)

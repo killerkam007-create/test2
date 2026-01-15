@@ -1,5 +1,5 @@
 #reverse String 
-def reverse_string(s):
+def reverse_string(a):
     b=a.split(" ")
     print(b)
     j=[]
@@ -45,3 +45,13 @@ def flatten_lsit(a):
             b.append(item)
             
     print (f'Flatten list is {b}')
+
+
+#####Find the nth largest number in a list
+def nth_largest_number(a,n):
+    if (n-1)<len(set(a)):
+        b=list(set(a))
+        b.sort(reverse=True)
+        print(f'{n} largest element in a list {a} is {b[n-1]}')
+    else:
+        print(f'{n} is out of index')
