@@ -1,3 +1,6 @@
+this is to test the parellel code in bot branchec with minor changes before merge to check conflict
+
+
 from pyspark.sql import SparkSession
 print("test 2 iniciated")
 spark=SparkSession.builder.appName("TestApp").getOrCreate()
