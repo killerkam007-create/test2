@@ -5,12 +5,24 @@ from test2 import test,test_init_upper
 from read_data import read_data1
 from mics import reverse_string,duplicateValue,preservingOrderList
 from mics import factorial_test,nth_largest_number,flatten_lsit,count_frequency,reverse_mics
-
+def count_words():
+    
+    return 
+def count_value(a):
+    b=set(a)
+    for item in b:
+        j=a.count(item)
+        print(f"Element \"{item}\" appears {j} times.")    
+    return
 
 if __name__=="__main__":
     a='comprehensive list of 50 interview questions tailored for a Data Engineer with 5+ years of experience, covering SQL, data modeling, ETL, big data, cloud platforms, and system design.'
-    reverse_string(a)
-    print(list(a))
+    b=a.split()
+    count_value(b)
+    print("--------------------------------------------------")
+    
+    # reverse_string(a)
+    # print(list(a))
     sample_list=[1,9,2,3,3,4,55,5,6,7,8,9,9,10]
     total=0
   # Given a list of numbers, find the sum without using sum()
@@ -31,6 +43,11 @@ if __name__=="__main__":
     print(f"Reversed list is: {reversed_list}")
     # Remove duplicate elements from a list.
     print(f'Removing duplicates from {sample_list} is  {set(sample_list)}')
+    # use map function to do update.
+    l1=[1,2,3,4,5,6,7,8,9,10]
+    square_list=list(map(lambda x: x*x,l1))
+    print(f"Square of list elements using map function: {square_list}")
+    
 
 
 
