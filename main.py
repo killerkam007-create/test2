@@ -5,9 +5,14 @@ from test2 import test,test_init_upper
 from read_data import read_data1
 from mics import reverse_string,duplicateValue,preservingOrderList
 from mics import factorial_test,nth_largest_number,flatten_lsit,count_frequency,reverse_mics
-def count_words():
+def count_words(a):
+    word=a.split()
+    for item in word:
+      word_count=len(item)
+      print(f"Total number of words in the given string is: {word_count}")
+    return
     
-    return 
+     
 def count_value(a):
     b=set(a)
     for item in b:
@@ -18,6 +23,7 @@ def count_value(a):
 if __name__=="__main__":
     a='comprehensive list of 50 interview questions tailored for a Data Engineer with 5+ years of experience, covering SQL, data modeling, ETL, big data, cloud platforms, and system design.'
     b=a.split()
+    count_words(a)
     count_value(b)
     print("--------------------------------------------------")
     
