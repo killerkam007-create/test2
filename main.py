@@ -1,6 +1,7 @@
 from sre_parse import State
-from pyspark.sql.functions import count,sum,lower,upper,avg,udf
-from pyspark.sql import SparkSession
+from pyspark.sql.functions import broadcast
+from pyspark.sql.functions import count,sum,lower,upper,avg,udf,lit,when
+from pyspark.sql import SparkSession,Window
 from dict_cal_value import dict_cal
 from test2 import test,test_init_upper
 from read_data import read_data1
@@ -73,9 +74,30 @@ if __name__=="__main__":
         df["State"]).agg(
             count("Pincode").alias("Pincode_Count"),
             sum(df["Pincode"]).alias("Pincode_Sum"),
-            avg(df["Pincode"].alias("pincode_avg"))
-            ).orderBy(df["State"])
+            avg(df["Pincode"]).alias("Pincode_Avg")
+                ).orderBy(df["State"])
     df6=df6.dropna()
+    df6=df6.withColumn("flag_code",when(df6["Pincode_Count"]<=100,"Low")
+                       .when((df6["Pincode_Count"]>100) & (df6["Pincode_Count"]<500),"Medium")
+                       .otherwise("High")
+                       )
+    df6.show(truncate=False)
+    win_spc=Window.partitionBy(df6["flag_code"]).orderBy(df6["flag_code"])
+    df7=df6.withColumn("row_num",F.row_number().over(win_spc))
+    df7.show(100,truncate=False)
+    df7=df7.withColumn("State",F.trim(df7["State"]))
+    df_summary=df7.withColumn("Summary",F.concat_ws("_",df7["State"],df7["Pincode_Count"],df7["Flag_code"],df7["row_num"]))
+    df_summary.show(100)
+
+    # dfasssam=df.filter(df["State"]=="Assam")
+    # df_pin=dfasssam.select("Pincode","Location")
+    # df_pin=df_pin.withColumn("test_date",lit("2024-01-01"))
+    # df_Dict=dfasssam.select("District","State","Pincode")
+    # df_final=df_pin.join(broadcast(df_Dict),on="Pincode",how="inner") 
+    # df_final.show(truncate=False)
+
+
+
     # df7 = df6.withColumn("f_name", F.split(F.col("State"), " ").getItem(0)) \
     #      .withColumn("l_name", F.split(F.col("State"), " ").getItem(1))
     # df7.show()
