@@ -1,6 +1,7 @@
 from sre_parse import State
+import pandas as pd
 from pyspark.sql.functions import broadcast
-from pyspark.sql.functions import count,sum,lower,upper,avg,udf,lit,when
+from pyspark.sql.functions import count,sum,lower,upper,avg,udf,lit,when,substring,concat_ws,concat,split,explode
 from pyspark.sql import SparkSession,Window
 from dict_cal_value import dict_cal
 from test2 import test,test_init_upper
@@ -34,14 +35,14 @@ def flatten_list(nested_list):
     return planned_list
 
 if __name__=="__main__":
-  d1 = {'a': 1, 'b': 2}
-  d2 = {'b': 3, 'c': 4}
+#   d1 = {'a': 1, 'b': 2}
+#   d2 = {'b': 3, 'c': 4}
 
-  d1.update(d2)  # modifies d1
-  print(d1)       # {'a': 1, 'b': 3, 'c': 4}
+#   d1.update(d2)  # modifies d1
+#   print(d1)       # {'a': 1, 'b': 3, 'c': 4}
 
-  for key, value in d1.items():
-      print(f"{key}: {value}")
+#   for key, value in d1.items():
+#       print(f"{key}: {value}")
 
  
 
@@ -93,9 +94,9 @@ if __name__=="__main__":
 # for item in z:
 #    dict1[item]=b.count(item)
 # print(dict1)
-  nested_list = [1, 2, [3, [4, 5,9],0], 6, ['a', 'b']]
-  planned_list=flatten_list(nested_list)
-  print(planned_list)
+#   nested_list = [1, 2, [3, [4, 5,9],0], 6, ['a', 'b']]
+#   planned_list=flatten_list(nested_list)
+#   print(planned_list)
 
 # print(planned_list)
 
@@ -131,12 +132,38 @@ if __name__=="__main__":
     # l1=[1,2,3,4,5,6,7,8,9,10]
     # square_list=list(map(lambda x: x*x,l1))
     # print(f"Square of list elements using map function: {square_list}")
-    
+    def reverse_str(s):
+        return s[::-1]  
 
-    # spark=SparkSession.builder.appName("TestApp").getOrCreate()
-    # df=read_data1(spark)
-    # udf_funct=udf()
-    # df.show()
+    spark=SparkSession.builder.appName("TestApp").getOrCreate()
+    df=read_data1(spark)
+    df.show(2)
+    df_select=df.select("State","District").filter(df['State']=='Bihar')
+    df_select.show(2)
+    df_upper=df_select.withColumn('u_district',upper(df['District']))
+    df_upper=df_upper.drop(df_upper['District'])
+    df_upper=df_upper.withColumnRenamed("u_district","District")
+    #df_dist=df_upper.distinct(df_upper['District'])
+    df1=df_upper.withColumn("init_upper",concat(upper(substring(df_upper['District'],1,1)),
+                           lower(substring(df_upper['District'],2,100))))
+    df2=df1.groupBy(df1['State'],df1['init_upper']).agg(
+        count('init_upper').alias('dict_count')
+    )
+    df3=df2.withColumn('comp_key',concat_ws("_",df2['init_upper'],df2['dict_count']))
+    df4=df3.withColumn('F_name',split(df3['comp_key'],'_')[1]).withColumn("L_name",split(df3['comp_key'],'_')[0])
+    df4=df4.withColumn("calc_val",when(df4['F_name']<100,df4['F_name']*0.000001).otherwise(df4['F_name']))
+    df4.filter(df4['calc_val']>200).show(100)
+    df4=df4.filter(lower(df4['init_upper']).startswith('si'))
+    my_fun=udf(reverse_str)
+    df4=df4.withColumn("reverse_data",my_fun(df4['L_name']))
+    df4=df4.withColumn("comp_key_array",split(df4['comp_key'],'_'))
+    df4=df4.withColumn("comp_key_string",explode(df4['comp_key_array']))
+    df4=df4.drop('F_name','L_name','calc_val')
+    df4.show(100,truncate=False)
+    pdf = df4.toPandas()
+    pdf.to_csv("C:\\Users\\SURAJ\\OneDrive\\Desktop\\pro\\test2\\bihar.csv",index=False)
+    spark.stop()
+
     # df2=df.select("Pincode","Location")
     # df2.show()
     # df3=df.filter(df["Pincode"]==110092)
@@ -209,6 +236,5 @@ if __name__=="__main__":
     # .option("header", "true") \
     # .partitionBy("State") \
     # .save(r"C:\Users\SURAJ\OneDrive\Desktop\pro\test2\Assam_partitioned")
-    # spark.stop()
 
 
